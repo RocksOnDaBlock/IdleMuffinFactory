@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="\styles.css">
+    <script src="script.js"></script>
+    <style>
+      /*  body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #FFF0D4;
+            color: #6B4226;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23d2691e' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath fill='%23D2691E' d='M16 0C7.164 0 0 7.164 0 16s7.164 16 16 16 16-7.164 16-16S24.836 0 16 0zm0 28C9.373 28 4 22.627 4 16S9.373 4 16 4s12 5.373 12 12-5.373 12-12 12z'/%3E%3Cpath fill='%23D2691E' d='M16 8c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 14c-3.309 0-6-2.691-6-6s2.691-6 6-6 6 2.691 6 6-2.691 6-6 6z'/%3E%3C/svg%3E"), auto;
+        }
+        #game {
+            background-color: #FFF9E6;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(107, 66, 38, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #D2691E;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        #muffin-display {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #FFB347;
+            border: none;
+            color: #6B4226;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #FFA500;
+        }
+        button:disabled {
+            background-color: #D3D3D3;
+            cursor: not-allowed;
+        }
+        hr {
+            border: 1px dashed #D2691E;
+            margin: 20px 0;
+        }
+        .upgrade {
+            background-color: #FFE4B5;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        #muffin-art {
+            font-family: monospace;
+            white-space: pre;
+            font-size: 12px;
+            line-height: 1;
+            margin: 20px 0;
+            color: #D2691E;
+        }
+        @keyframes riseMuffin {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .rising-muffin {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            animation: riseMuffin 1s ease-out;
+        }
+        #level-display {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #8B4513;
+        }
+        #muffin-types {
+            display: flex;
+            justify-content: space-around;
+            margin: 10px 0;
+        }
+        .muffin-type {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .muffin-type:hover {
+            background-color: #FFD700;
+        }
+        .selected {
+            background-color: #FFA500;
+        }*/
+    </style>
+</head>
+<body>
+    <div id="game">
+        <h1>Idle Muffin Factory</h1>
+        <div id="level-display">
+            Level: <span id="level">1</span>
+            <div id="progress-bar" style="width: 100%; background-color: #ddd;">
+                <div id="progress" style="width: 0%; height: 20px; background-color: #4CAF50;"></div>
+            </div>
+        </div>
+        <div id="muffin-art">
+   _______
+  /       \
+ /  ^   ^  \
+|  (o) (o)  |
+|     <     |
+|  \     /  |
+ \  '---'  /
+  \_______/
+        </div>
+        <div id="muffin-display">
+            <p>Muffins: <span id="muffins">0</span></p>
+            <p>Muffin Coins: <span id="coins">0</span></p>
+        </div>
+        <div id="muffin-types">
+            <div class="muffin-type selected" onclick="selectMuffinType('plain')">🧁 Plain</div>
+            <div class="muffin-type" onclick="selectMuffinType('chocolate')">🍫 Chocolate</div>
+            <div class="muffin-type" onclick="selectMuffinType('blueberry')">🫐 Blueberry</div>
+        </div>
+        <button onclick="bakeMuffin()">Bake Muffin</button>
+        <button onclick="sellAllMuffins()">Sell All Muffins</button>
+        <hr>
+        <h2>Bakery Upgrades</h2>
+        <div class="upgrade">
+            <button id="autobakerButton" onclick="buyUpgrade('autobaker')" disabled>Buy Autobaker (50 coins)</button>
+            <p>Autobakers: <span id="autobakers">0</span> (x<span id="autobakerMultiplier">1</span> per second)</p>
+        </div>
+        <div class="upgrade">
+            <button id="flavorBoostButton" onclick="buyUpgrade('flavorBoost')" disabled>Flavor Boost (100 coins)</button>
+            <p>Flavor Boost: x<span id="flavorBoost">1</span> coin per muffin</p>
+        </div>
+        <div class="upgrade">
+            <button id="doubleClickButton" onclick="buyUpgrade('doubleClick')" disabled>Double Click (200 coins)</button>
+            <p>Double Click: x<span id="doubleClick">1</span> muffins per click</p>
+        </div>
+        <div class="upgrade">
+            <button id="marketingButton" onclick="buyUpgrade('marketing')" disabled>Marketing Campaign (500 coins)</button>
+            <p>Marketing: <span id="marketing">0</span>% chance of bonus coins</p>
+        </div>
+        <div class="upgrade">
+            <button id="managerButton" onclick="buyUpgrade('manager')" disabled>Hire Manager (1000 coins)</button>
+            <p>Manager: Auto-sells <span id="managerPercentage">0</span>% of muffins every 5 seconds</p>
+        </div>
+    </div>
+
+    <script>
+       /* let muffins = 0;
+        let coins = 0;
+        let level = 1;
+        let experience = 0;
+        let selectedMuffinType = 'plain';
+
+        let upgrades = {
+            autobaker: { count: 0, cost: 50, multiplier: 1 },
+            flavorBoost: { count: 0, cost: 100, multiplier: 1 },
+            doubleClick: { count: 0, cost: 200, multiplier: 1 },
+            marketing: { count: 0, cost: 500, multiplier: 0 },
+            manager: { count: 0, cost: 1000, multiplier: 0 }
+        };
+
+        let muffinTypes = {
+            plain: { value: 1, experienceGain: 1 },
+            chocolate: { value: 2, experienceGain: 2, unlockedAtLevel: 3 },
+            blueberry: { value: 3, experienceGain: 3, unlockedAtLevel: 5 }
+        };
+
+        function updateDisplay() {
+            document.getElementById('muffins').textContent = Math.floor(muffins);
+            document.getElementById('coins').textContent = Math.floor(coins);
+            document.getElementById('autobakers').textContent = upgrades.autobaker.count;
+            document.getElementById('autobakerMultiplier').textContent = upgrades.autobaker.multiplier;
+            document.getElementById('flavorBoost').textContent = upgrades.flavorBoost.multiplier;
+            document.getElementById('doubleClick').textContent = upgrades.doubleClick.multiplier;
+            document.getElementById('marketing').textContent = upgrades.marketing.multiplier;
+            document.getElementById('managerPercentage').textContent = upgrades.manager.multiplier;
+            document.getElementById('level').textContent = level;
+
+            for (let upgrade in upgrades) {
+                document.getElementById(`${upgrade}Button`).disabled = coins < upgrades[upgrade].cost;
+                document.getElementById(`${upgrade}Button`).textContent = `Buy ${upgrade} (${upgrades[upgrade].cost} coins)`;
+            }
+
+            // Update progress bar
+            let nextLevelExperience = level * 100;
+            let progress = (experience / nextLevelExperience) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
+            // Update muffin type selections
+            for (let type in muffinTypes) {
+                let element = document.querySelector(`.muffin-type:nth-child(${Object.keys(muffinTypes).indexOf(type) + 1})`);
+                if (muffinTypes[type].unlockedAtLevel && level < muffinTypes[type].unlockedAtLevel) {
+                    element.style.opacity = '0.5';
+                    element.style.cursor = 'not-allowed';
+                } else {
+                    element.style.opacity = '1';
+                    element.style.cursor = 'pointer';
+                }
+            }
+        }
+
+        function selectMuffinType(type) {
+            if (muffinTypes[type].unlockedAtLevel && level < muffinTypes[type].unlockedAtLevel) {
+                alert(`You need to reach level ${muffinTypes[type].unlockedAtLevel} to unlock ${type} muffins!`);
+                return;
+            }
+            selectedMuffinType = type;
+            document.querySelectorAll('.muffin-type').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`.muffin-type:nth-child(${Object.keys(muffinTypes).indexOf(type) + 1})`).classList.add('selected');
+        }
+
+        function bakeMuffin() {
+            muffins += upgrades.doubleClick.multiplier * muffinTypes[selectedMuffinType].value;
+            gainExperience(muffinTypes[selectedMuffinType].experienceGain);
+            updateDisplay();
+            createRisingMuffin();
+        }
+
+        function gainExperience(amount) {
+            experience += amount;
+            let nextLevelExperience = level * 100;
+            while (experience >= nextLevelExperience) {
+                level++;
+                experience -= nextLevelExperience;
+                nextLevelExperience = level * 100;
+                alert(`Congratulations! You've reached level ${level}!`);
+            }
+            updateDisplay();
+        }
+
+        function createRisingMuffin() {
+            const muffin = document.createElement('div');
+            muffin.textContent = selectedMuffinType === 'plain' ? '🧁' : (selectedMuffinType === 'chocolate' ? '🍫' : '🫐');
+            muffin.classList.add('rising-muffin');
+            muffin.style.left = `${Math.random() * 80 + 10}%`;
+            document.body.appendChild(muffin);
+            setTimeout(() => muffin.remove(), 1000);
+        }
+
+        function sellMuffins(amount) {
+            let totalCoins = amount * upgrades.flavorBoost.multiplier * muffinTypes[selectedMuffinType].value;
+            if (Math.random() < upgrades.marketing.multiplier / 100) {
+                totalCoins *= 2;
+            }
+            coins += totalCoins;
+            muffins -= amount;
+            updateDisplay();
+        }
+
+        function sellAllMuffins() {
+            if (muffins > 0) {
+                sellMuffins(muffins);
+                if (upgrades.marketing.multiplier > 0 && Math.random() < upgrades.marketing.multiplier / 100) {
+                    alert("Marketing boost! Double coins earned!");
+                }
+            }
+        }
+
+        function buyUpgrade(upgradeType) {
+            let upgrade = upgrades[upgradeType];
+            if (coins >= upgrade.cost) {
+                coins -= upgrade.cost;
+                upgrade.count++;
+                upgrade.cost = Math.floor(upgrade.cost * 1.5);
+
+                switch(upgradeType) {
+                    case 'autobaker':
+                        if (upgrade.count % 5 === 0) upgrade.multiplier++;
+                        break;
+                    case 'flavorBoost':
+                        upgrade.multiplier++;
+                        break;
+                    case 'doubleClick':
+                        upgrade.multiplier *= 2;
+                        break;
+                    case 'marketing':
+                        upgrade.multiplier += 5;
+                        break;
+                    case 'manager':
+                        upgrade.multiplier += 5;
+                        break;
+                }
+
+                updateDisplay();
+            }
+        }
+
+        setInterval(function() {
+            muffins += upgrades.autobaker.count * upgrades.autobaker.multiplier * muffinTypes[selectedMuffinType].value;
+            gainExperience(upgrades.autobaker.count * upgrades.autobaker.multiplier * muffinTypes[selectedMuffinType].experienceGain);
+            updateDisplay();
+        }, 1000);
+
+        setInterval(function() {
+            if (upgrades.manager.multiplier > 0) {
+                let muffinsToSell = Math.floor(muffins * (upgrades.manager.multiplier / 100));
+                if (muffinsToSell > 0) {
+                    sellMuffins(muffinsToSell);
+                }
+            }
+        }, 5000);
+
+        updateDisplay(); */
+    </script>
+</body>
+</html>
