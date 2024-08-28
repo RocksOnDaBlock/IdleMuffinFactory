@@ -111,216 +111,33 @@
     </style>
 </head>
 <body>
-    <div id="game">
-        <h1>Idle Muffin Factory</h1>
-        <div id="level-display">
-            Level: <span id="level">1</span>
-            <div id="progress-bar" style="width: 100%; background-color: #ddd;">
-                <div id="progress" style="width: 0%; height: 20px; background-color: #4CAF50;"></div>
-            </div>
+    <div class="game-container">
+        <h1>Muffin Clicker</h1>
+        <div class="muffin-types">
+            <div class="muffin-type selected" onclick="selectMuffinType('plain')">Plain 🧁</div>
+            <div class="muffin-type" onclick="selectMuffinType('chocolate')">Chocolate 🍫</div>
+            <div class="muffin-type" onclick="selectMuffinType('blueberry')">Blueberry 🫐</div>
         </div>
-        <div id="muffin-art">
-   _______
-  /       \
- /  ^   ^  \
-|  (o) (o)  |
-|     <     |
-|  \     /  |
- \  '---'  /
-  \_______/
-        </div>
-        <div id="muffin-display">
-            <p>Muffins: <span id="muffins">0</span></p>
-            <p>Muffin Coins: <span id="coins">0</span></p>
-        </div>
-        <div id="muffin-types">
-            <div class="muffin-type selected" onclick="selectMuffinType('plain')">🧁 Plain</div>
-            <div class="muffin-type" onclick="selectMuffinType('chocolate')">🍫 Chocolate</div>
-            <div class="muffin-type" onclick="selectMuffinType('blueberry')">🫐 Blueberry</div>
+        <p>Muffins: <span id="muffins">0</span></p>
+        <p>Coins: <span id="coins">0</span></p>
+        <p>Level: <span id="level">1</span></p>
+        <div class="progress-bar">
+            <div id="progress"></div>
         </div>
         <button onclick="bakeMuffin()">Bake Muffin</button>
         <button onclick="sellAllMuffins()">Sell All Muffins</button>
-        <hr>
-        <h2>Bakery Upgrades</h2>
-        <div class="upgrade">
-            <button id="autobakerButton" onclick="buyUpgrade('autobaker')" disabled>Buy Autobaker (50 coins)</button>
-            <p>Autobakers: <span id="autobakers">0</span> (x<span id="autobakerMultiplier">1</span> per second)</p>
-        </div>
-        <div class="upgrade">
-            <button id="flavorBoostButton" onclick="buyUpgrade('flavorBoost')" disabled>Flavor Boost (100 coins)</button>
-            <p>Flavor Boost: x<span id="flavorBoost">1</span> coin per muffin</p>
-        </div>
-        <div class="upgrade">
-            <button id="doubleClickButton" onclick="buyUpgrade('doubleClick')" disabled>Double Click (200 coins)</button>
-            <p>Double Click: x<span id="doubleClick">1</span> muffins per click</p>
-        </div>
-        <div class="upgrade">
-            <button id="marketingButton" onclick="buyUpgrade('marketing')" disabled>Marketing Campaign (500 coins)</button>
-            <p>Marketing: <span id="marketing">0</span>% chance of bonus coins</p>
-        </div>
-        <div class="upgrade">
-            <button id="managerButton" onclick="buyUpgrade('manager')" disabled>Hire Manager (1000 coins)</button>
-            <p>Manager: Auto-sells <span id="managerPercentage">0</span>% of muffins every 5 seconds</p>
-        </div>
+        <p>Autobakers: <span id="autobakers">0</span> (x<span id="autobakerMultiplier">1</span>)</p>
+        <p>Flavor Boost: x<span id="flavorBoost">1</span></p>
+        <p>Double Click: x<span id="doubleClick">1</span></p>
+        <p>Marketing Chance: <span id="marketing">0</span>%</p>
+        <p>Manager Sell: <span id="managerPercentage">0</span>%</p>
+        <button id="autobakerButton" onclick="buyUpgrade('autobaker')">Buy autobaker (100 coins)</button>
+        <button id="flavorBoostButton" onclick="buyUpgrade('flavorBoost')">Buy flavor boost (200 coins)</button>
+        <button id="doubleClickButton" onclick="buyUpgrade('doubleClick')">Buy double click (400 coins)</button>
+        <button id="marketingButton" onclick="buyUpgrade('marketing')">Buy marketing (1000 coins)</button>
+        <button id="managerButton" onclick="buyUpgrade('manager')">Buy manager (2000 coins)</button>
+        <button id="resetButton" onclick="resetGame()">Reset Game</button>
     </div>
 
-    <script>
-       /* let muffins = 0;
-        let coins = 0;
-        let level = 1;
-        let experience = 0;
-        let selectedMuffinType = 'plain';
-
-        let upgrades = {
-            autobaker: { count: 0, cost: 50, multiplier: 1 },
-            flavorBoost: { count: 0, cost: 100, multiplier: 1 },
-            doubleClick: { count: 0, cost: 200, multiplier: 1 },
-            marketing: { count: 0, cost: 500, multiplier: 0 },
-            manager: { count: 0, cost: 1000, multiplier: 0 }
-        };
-
-        let muffinTypes = {
-            plain: { value: 1, experienceGain: 1 },
-            chocolate: { value: 2, experienceGain: 2, unlockedAtLevel: 3 },
-            blueberry: { value: 3, experienceGain: 3, unlockedAtLevel: 5 }
-        };
-
-        function updateDisplay() {
-            document.getElementById('muffins').textContent = Math.floor(muffins);
-            document.getElementById('coins').textContent = Math.floor(coins);
-            document.getElementById('autobakers').textContent = upgrades.autobaker.count;
-            document.getElementById('autobakerMultiplier').textContent = upgrades.autobaker.multiplier;
-            document.getElementById('flavorBoost').textContent = upgrades.flavorBoost.multiplier;
-            document.getElementById('doubleClick').textContent = upgrades.doubleClick.multiplier;
-            document.getElementById('marketing').textContent = upgrades.marketing.multiplier;
-            document.getElementById('managerPercentage').textContent = upgrades.manager.multiplier;
-            document.getElementById('level').textContent = level;
-
-            for (let upgrade in upgrades) {
-                document.getElementById(`${upgrade}Button`).disabled = coins < upgrades[upgrade].cost;
-                document.getElementById(`${upgrade}Button`).textContent = `Buy ${upgrade} (${upgrades[upgrade].cost} coins)`;
-            }
-
-            // Update progress bar
-            let nextLevelExperience = level * 100;
-            let progress = (experience / nextLevelExperience) * 100;
-            document.getElementById('progress').style.width = progress + '%';
-
-            // Update muffin type selections
-            for (let type in muffinTypes) {
-                let element = document.querySelector(`.muffin-type:nth-child(${Object.keys(muffinTypes).indexOf(type) + 1})`);
-                if (muffinTypes[type].unlockedAtLevel && level < muffinTypes[type].unlockedAtLevel) {
-                    element.style.opacity = '0.5';
-                    element.style.cursor = 'not-allowed';
-                } else {
-                    element.style.opacity = '1';
-                    element.style.cursor = 'pointer';
-                }
-            }
-        }
-
-        function selectMuffinType(type) {
-            if (muffinTypes[type].unlockedAtLevel && level < muffinTypes[type].unlockedAtLevel) {
-                alert(`You need to reach level ${muffinTypes[type].unlockedAtLevel} to unlock ${type} muffins!`);
-                return;
-            }
-            selectedMuffinType = type;
-            document.querySelectorAll('.muffin-type').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`.muffin-type:nth-child(${Object.keys(muffinTypes).indexOf(type) + 1})`).classList.add('selected');
-        }
-
-        function bakeMuffin() {
-            muffins += upgrades.doubleClick.multiplier * muffinTypes[selectedMuffinType].value;
-            gainExperience(muffinTypes[selectedMuffinType].experienceGain);
-            updateDisplay();
-            createRisingMuffin();
-        }
-
-        function gainExperience(amount) {
-            experience += amount;
-            let nextLevelExperience = level * 100;
-            while (experience >= nextLevelExperience) {
-                level++;
-                experience -= nextLevelExperience;
-                nextLevelExperience = level * 100;
-                alert(`Congratulations! You've reached level ${level}!`);
-            }
-            updateDisplay();
-        }
-
-        function createRisingMuffin() {
-            const muffin = document.createElement('div');
-            muffin.textContent = selectedMuffinType === 'plain' ? '🧁' : (selectedMuffinType === 'chocolate' ? '🍫' : '🫐');
-            muffin.classList.add('rising-muffin');
-            muffin.style.left = `${Math.random() * 80 + 10}%`;
-            document.body.appendChild(muffin);
-            setTimeout(() => muffin.remove(), 1000);
-        }
-
-        function sellMuffins(amount) {
-            let totalCoins = amount * upgrades.flavorBoost.multiplier * muffinTypes[selectedMuffinType].value;
-            if (Math.random() < upgrades.marketing.multiplier / 100) {
-                totalCoins *= 2;
-            }
-            coins += totalCoins;
-            muffins -= amount;
-            updateDisplay();
-        }
-
-        function sellAllMuffins() {
-            if (muffins > 0) {
-                sellMuffins(muffins);
-                if (upgrades.marketing.multiplier > 0 && Math.random() < upgrades.marketing.multiplier / 100) {
-                    alert("Marketing boost! Double coins earned!");
-                }
-            }
-        }
-
-        function buyUpgrade(upgradeType) {
-            let upgrade = upgrades[upgradeType];
-            if (coins >= upgrade.cost) {
-                coins -= upgrade.cost;
-                upgrade.count++;
-                upgrade.cost = Math.floor(upgrade.cost * 1.5);
-
-                switch(upgradeType) {
-                    case 'autobaker':
-                        if (upgrade.count % 5 === 0) upgrade.multiplier++;
-                        break;
-                    case 'flavorBoost':
-                        upgrade.multiplier++;
-                        break;
-                    case 'doubleClick':
-                        upgrade.multiplier *= 2;
-                        break;
-                    case 'marketing':
-                        upgrade.multiplier += 5;
-                        break;
-                    case 'manager':
-                        upgrade.multiplier += 5;
-                        break;
-                }
-
-                updateDisplay();
-            }
-        }
-
-        setInterval(function() {
-            muffins += upgrades.autobaker.count * upgrades.autobaker.multiplier * muffinTypes[selectedMuffinType].value;
-            gainExperience(upgrades.autobaker.count * upgrades.autobaker.multiplier * muffinTypes[selectedMuffinType].experienceGain);
-            updateDisplay();
-        }, 1000);
-
-        setInterval(function() {
-            if (upgrades.manager.multiplier > 0) {
-                let muffinsToSell = Math.floor(muffins * (upgrades.manager.multiplier / 100));
-                if (muffinsToSell > 0) {
-                    sellMuffins(muffinsToSell);
-                }
-            }
-        }, 5000);
-
-        updateDisplay(); */
-    </script>
 </body>
 </html>
