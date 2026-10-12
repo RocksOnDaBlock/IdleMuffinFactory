@@ -1,143 +1,721 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="script.js"></script>
-    <style>
-      /*  body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #FFF0D4;
-            color: #6B4226;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23d2691e' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath fill='%23D2691E' d='M16 0C7.164 0 0 7.164 0 16s7.164 16 16 16 16-7.164 16-16S24.836 0 16 0zm0 28C9.373 28 4 22.627 4 16S9.373 4 16 4s12 5.373 12 12-5.373 12-12 12z'/%3E%3Cpath fill='%23D2691E' d='M16 8c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 14c-3.309 0-6-2.691-6-6s2.691-6 6-6 6 2.691 6 6-2.691 6-6 6z'/%3E%3C/svg%3E"), auto;
-        }
-        #game {
-            background-color: #FFF9E6;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(107, 66, 38, 0.2);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            color: #D2691E;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        #muffin-display {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        button {
-            background-color: #FFB347;
-            border: none;
-            color: #6B4226;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #FFA500;
-        }
-        button:disabled {
-            background-color: #D3D3D3;
-            cursor: not-allowed;
-        }
-        hr {
-            border: 1px dashed #D2691E;
-            margin: 20px 0;
-        }
-        .upgrade {
-            background-color: #FFE4B5;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
-        }
-        #muffin-art {
-            font-family: monospace;
-            white-space: pre;
-            font-size: 12px;
-            line-height: 1;
-            margin: 20px 0;
-            color: #D2691E;
-        }
-        @keyframes riseMuffin {
-            0% { transform: translateY(20px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-        .rising-muffin {
-            position: absolute;
-            font-size: 24px;
-            pointer-events: none;
-            animation: riseMuffin 1s ease-out;
-        }
-        #level-display {
-            font-size: 1.2em;
-            margin: 10px 0;
-            color: #8B4513;
-        }
-        #muffin-types {
-            display: flex;
-            justify-content: space-around;
-            margin: 10px 0;
-        }
-        .muffin-type {
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .muffin-type:hover {
-            background-color: #FFD700;
-        }
-        .selected {
-            background-color: #FFA500;
-        }*/
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idle Muffin Factory</title>
+<meta name="description" content="Idle Muffin Factory - click muffins, build an empire, question your life choices.">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#fff4e0;--choc:#4a2c1a;--choc2:#6b3f24;--pink:#ff7aa8;--gold:#ffc83d;--mint:#7be0b0;--panel:#2a1810;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:'Fredoka',sans-serif;color:var(--cream);overflow:hidden;
+    background:radial-gradient(circle at 30% 20%,#7a4a2c 0%,#3d2214 55%,#1f110a 100%);}
+  button{font-family:inherit;}
+  #rain{position:fixed;inset:0;pointer-events:none;z-index:0;}
+  .app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:minmax(300px,1fr) minmax(320px,430px);
+    grid-template-rows:auto 1fr;}
+  header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;
+    background:rgba(0,0,0,.35);border-bottom:3px solid var(--choc2);flex-wrap:wrap;}
+  header h1{font-family:'Press Start 2P',monospace;font-size:clamp(11px,2vw,16px);color:var(--gold);text-shadow:2px 2px 0 #000;}
+  .hb{display:flex;gap:8px;}
+  .ibtn{background:rgba(0,0,0,.35);border:2px solid #ffffff33;color:#fff;border-radius:8px;padding:6px 10px;
+    font-size:14px;cursor:pointer;text-decoration:none;}
+  .ibtn:hover{border-color:var(--gold);}
+
+  /* ---------- left: the muffin ---------- */
+  .left{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;overflow:hidden;position:relative;}
+  .count{text-align:center;}
+  .count .num{font-size:clamp(28px,5vw,46px);font-weight:700;text-shadow:3px 3px 0 #000;}
+  .count .lbl{font-size:15px;opacity:.85;}
+  .count .mps{font-size:16px;color:var(--mint);margin-top:4px;}
+  .count .mps.frenzy{color:var(--gold);animation:pulse .4s infinite alternate;}
+  @keyframes pulse{to{opacity:.6}}
+  #bigMuffin{width:clamp(180px,30vw,280px);height:clamp(180px,30vw,280px);border:none;background:none;cursor:pointer;
+    font-size:clamp(130px,22vw,210px);line-height:1;filter:drop-shadow(0 12px 18px rgba(0,0,0,.55));
+    transition:transform .07s;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
+  #bigMuffin:hover{transform:scale(1.04) rotate(-2deg);}
+  #bigMuffin.pop{transform:scale(.92);}
+  #bigMuffin::before{content:"";position:absolute;inset:8%;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(255,200,61,.35),transparent 70%);animation:spin 12s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .perclick{font-size:14px;opacity:.8;}
+  .float{position:fixed;pointer-events:none;font-weight:700;font-size:20px;color:#fff;text-shadow:2px 2px 0 #000;
+    animation:up 1s ease-out forwards;z-index:50;}
+  @keyframes up{to{transform:translateY(-80px);opacity:0;}}
+  #buffs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:28px;}
+  .buff{background:#000a;border:2px solid var(--gold);border-radius:8px;padding:4px 8px;font-size:13px;}
+  #news{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.45);padding:8px 12px;font-size:14px;
+    white-space:nowrap;overflow:hidden;border-top:2px solid var(--choc2);}
+  #news span{display:inline-block;animation:ticker 18s linear infinite;padding-left:100%;}
+  @keyframes ticker{to{transform:translateX(-100%);}}
+
+  /* golden muffin */
+  #golden{position:fixed;font-size:64px;cursor:pointer;z-index:40;display:none;border:none;background:none;
+    filter:drop-shadow(0 0 14px gold) drop-shadow(0 0 30px #ffb300);animation:bob 1.2s ease-in-out infinite alternate, gfade 13s linear forwards;}
+  @keyframes bob{to{transform:translateY(-10px) rotate(8deg);}}
+  @keyframes gfade{0%{opacity:0}5%{opacity:1}85%{opacity:1}100%{opacity:0}}
+
+  /* ---------- right: store ---------- */
+  .right{background:rgba(26,14,8,.82);border-left:3px solid var(--choc2);display:flex;flex-direction:column;min-height:0;}
+  .tabs{display:flex;border-bottom:2px solid var(--choc2);}
+  .tab{flex:1;padding:10px 4px;background:none;border:none;color:#fff;font-weight:600;font-size:14px;cursor:pointer;opacity:.6;}
+  .tab.on{opacity:1;background:rgba(255,200,61,.12);box-shadow:inset 0 -3px 0 var(--gold);}
+  .tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-left:4px;vertical-align:middle;}
+  .pane{flex:1;overflow-y:auto;padding:10px;min-height:0;}
+  .buyamt{display:flex;gap:6px;margin-bottom:10px;}
+  .buyamt button{flex:1;padding:6px;border-radius:6px;border:2px solid #ffffff22;background:#0004;color:#fff;cursor:pointer;font-weight:600;}
+  .buyamt button.on{border-color:var(--gold);color:var(--gold);}
+  .bld{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;
+    border-radius:10px;background:linear-gradient(90deg,#3a2216,#2b1810);border:2px solid #ffffff14;cursor:pointer;
+    transition:transform .08s,border-color .15s;width:100%;color:#fff;text-align:left;}
+  .bld:hover:not(.no){border-color:var(--gold);transform:translateX(-3px);}
+  .bld.no{opacity:.5;cursor:not-allowed;}
+  .bld.mystery{filter:brightness(.35);pointer-events:none;}
+  .bld .ic{font-size:36px;text-align:center;}
+  .bld .nm{font-weight:700;font-size:16px;}
+  .bld .ds{font-size:12px;opacity:.75;}
+  .bld .cost{font-size:14px;color:var(--gold);font-weight:600;}
+  .bld .cost.no{color:#ff8a8a;}
+  .bld .own{font-size:30px;font-weight:700;opacity:.35;}
+  .upg{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;
+    border-radius:10px;background:#3a2216;border:2px solid #ffffff14;cursor:pointer;color:#fff;text-align:left;width:100%;}
+  .upg:hover:not(.no){border-color:var(--gold);}
+  .upg.no{opacity:.5;cursor:not-allowed;}
+  .upg .ic{font-size:28px;text-align:center;}
+  .upg .nm{font-weight:700;}
+  .upg .ds{font-size:12px;opacity:.8;}
+  .upg .cost{font-size:13px;color:var(--gold);}
+  .empty{opacity:.6;text-align:center;padding:20px;font-size:14px;}
+  .ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;}
+  .ach div{aspect-ratio:1;border-radius:8px;background:#0005;display:flex;align-items:center;justify-content:center;
+    font-size:26px;filter:grayscale(1) brightness(.4);border:2px solid #ffffff14;}
+  .ach div.got{filter:none;border-color:var(--gold);}
+  .statgrid{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:14px;}
+  .statgrid td{padding:6px 2px;border-bottom:1px solid #ffffff14;}
+  .statgrid td:last-child{text-align:right;font-weight:600;}
+  .prestige{background:linear-gradient(135deg,#5a1f4a,#2b1030);border:2px solid var(--pink);border-radius:12px;padding:12px;margin-bottom:14px;}
+  .prestige h3{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--pink);margin-bottom:8px;}
+  .prestige p{font-size:13px;line-height:1.5;margin-bottom:10px;}
+  .bigbtn{width:100%;padding:12px;border-radius:10px;border:2px solid #000;font-weight:700;font-size:15px;cursor:pointer;
+    background:var(--pink);color:#2b0a1a;box-shadow:0 4px 0 #000;}
+  .bigbtn:disabled{filter:grayscale(1);opacity:.6;cursor:not-allowed;}
+  .danger{background:#ff6b6b;}
+  #tip{position:fixed;z-index:60;pointer-events:none;background:#140a05f2;border:2px solid var(--gold);border-radius:8px;
+    padding:8px 10px;font-size:13px;max-width:260px;display:none;}
+  #toasts{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:6px;align-items:center;}
+  .toast{background:#140a05f0;border:2px solid var(--gold);border-radius:10px;padding:8px 14px;font-size:14px;
+    animation:tin .3s ease-out, tout .4s ease-in 3.2s forwards;}
+  @keyframes tin{from{transform:translateY(-12px);opacity:0}}
+  @keyframes tout{to{opacity:0;transform:translateY(-8px)}}
+  .modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:80;padding:16px;}
+  .modal .box{background:#2a1810;border:3px solid var(--gold);border-radius:14px;padding:22px;max-width:380px;text-align:center;}
+  .modal h2{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--gold);margin-bottom:12px;line-height:1.6;}
+  .modal p{margin-bottom:16px;line-height:1.5;}
+  .hidden{display:none !important;}
+
+  @media (max-width:760px){
+    body{overflow:auto;}
+    .app{grid-template-columns:1fr;grid-template-rows:auto auto auto;height:auto;}
+    .left{min-height:62vh;padding-bottom:50px;}
+    .right{border-left:none;border-top:3px solid var(--choc2);min-height:70vh;}
+  }
+</style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Muffin Clicker</h1>
-        <div class="muffin-types">
-            <div class="muffin-type selected" onclick="selectMuffinType('plain')">Plain 🧁</div>
-            <div class="muffin-type" onclick="selectMuffinType('chocolate')">Chocolate 🍫</div>
-            <div class="muffin-type" onclick="selectMuffinType('blueberry')">Blueberry 🫐</div>
-        </div>
-        <p>Muffins: <span id="muffins">0</span></p>
-        <p>Coins: <span id="coins">0</span></p>
-        <p>Level: <span id="level">1</span></p>
-        <div class="progress-bar">
-            <div id="progress"></div>
-        </div>
-        <button onclick="bakeMuffin()">Bake Muffin</button>
-        <button onclick="sellAllMuffins()">Sell All Muffins</button>
-        <p>Autobakers: <span id="autobakers">0</span> (x<span id="autobakerMultiplier">1</span>)</p>
-        <p>Flavor Boost: x<span id="flavorBoost">1</span></p>
-        <p>Double Click: x<span id="doubleClick">1</span></p>
-        <p>Marketing Chance: <span id="marketing">0</span>%</p>
-        <p>Manager Sell: <span id="managerPercentage">0</span>%</p>
-        <button id="autobakerButton" onclick="buyUpgrade('autobaker')">Buy autobaker (100 coins)</button>
-        <button id="flavorBoostButton" onclick="buyUpgrade('flavorBoost')">Buy flavor boost (200 coins)</button>
-        <button id="doubleClickButton" onclick="buyUpgrade('doubleClick')">Buy double click (400 coins)</button>
-        <button id="marketingButton" onclick="buyUpgrade('marketing')">Buy marketing (1000 coins)</button>
-        <button id="managerButton" onclick="buyUpgrade('manager')">Buy manager (2000 coins)</button>
-        <button id="resetButton" onclick="resetGame()">Reset Game</button>
+<canvas id="rain"></canvas>
+<div class="app">
+  <header>
+    <h1>&#129473; IDLE MUFFIN FACTORY</h1>
+    <div class="hb">
+      <button class="ibtn" id="muteBtn">&#128266;</button>
+      <a class="ibtn" href="../">&#8592; Arcade</a>
     </div>
+  </header>
 
+  <section class="left">
+    <div class="count">
+      <div class="num" id="muffinCount">0</div>
+      <div class="lbl">muffins</div>
+      <div class="mps" id="mps">0 per second</div>
+    </div>
+    <button id="bigMuffin" aria-label="Bake a muffin">&#129473;</button>
+    <div class="perclick" id="perClick">+1 per click</div>
+    <div id="buffs"></div>
+    <div id="news"><span id="newsText">Local baker opens tiny shop. Nobody cares yet.</span></div>
+  </section>
+
+  <aside class="right">
+    <div class="tabs">
+      <button class="tab on" data-tab="shop">Shop</button>
+      <button class="tab" data-tab="upgrades">Upgrades<span class="dot hidden" id="upgDot"></span></button>
+      <button class="tab" data-tab="stats">Empire</button>
+    </div>
+    <div class="pane" id="pane-shop">
+      <div class="buyamt">
+        <button data-amt="1" class="on">x1</button><button data-amt="10">x10</button>
+        <button data-amt="100">x100</button><button data-amt="max">MAX</button>
+      </div>
+      <div id="buildings"></div>
+    </div>
+    <div class="pane hidden" id="pane-upgrades"><div id="upgrades"></div></div>
+    <div class="pane hidden" id="pane-stats">
+      <div class="prestige">
+        <h3>&#10024; FRANCHISE</h3>
+        <p>Sell the whole operation and start over. Every <b>Sprinkle</b> you earn is a permanent <b>+2% production</b>.
+          Sprinkles come from muffins baked this run.</p>
+        <p>You have <b id="sprHave">0</b> sprinkles (+<span id="sprPct">0</span>%).<br>Franchising now earns <b id="sprGain">0</b> more.
+          <br><span style="opacity:.7;font-size:12px" id="sprNext"></span></p>
+        <button class="bigbtn" id="prestigeBtn">FRANCHISE</button>
+      </div>
+      <table class="statgrid" id="statTable"></table>
+      <h3 style="font-size:14px;margin:4px 0 8px">Achievements <span id="achCount" style="opacity:.7"></span></h3>
+      <div class="ach" id="ach"></div>
+      <p style="font-size:12px;opacity:.7;margin:10px 0">Each achievement: +1% production.</p>
+      <button class="bigbtn danger" id="wipeBtn" style="margin-top:6px">WIPE SAVE</button>
+    </div>
+  </aside>
+</div>
+
+<button id="golden" aria-label="Golden muffin">&#129473;</button>
+<div id="tip"></div>
+<div id="toasts"></div>
+<div class="modal hidden" id="modal"><div class="box"><h2 id="mTitle"></h2><p id="mBody"></p>
+  <div style="display:flex;gap:8px;justify-content:center"><button class="bigbtn" id="mOk">OK</button>
+  <button class="bigbtn hidden" id="mCancel" style="background:#999">CANCEL</button></div></div></div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+
+/* =========================================================
+   NUMBERS
+   ========================================================= */
+const SUF = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 'Ud', 'Dd', 'Td'];
+function fmt(n, dec = 1) {
+  if (!isFinite(n)) return '\u221e';
+  if (n < 1000) return n < 10 && n % 1 ? n.toFixed(1) : Math.floor(n).toLocaleString();
+  const e = Math.min(SUF.length - 1, Math.floor(Math.log10(n) / 3));
+  const v = n / Math.pow(1000, e);
+  return (v >= 100 ? v.toFixed(0) : v.toFixed(v >= 10 ? dec : 2)) + SUF[e];
+}
+const fmtTime = s => {
+  s = Math.floor(s);
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return h ? `${h}h ${m}m` : m ? `${m}m ${sec}s` : `${sec}s`;
+};
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+const BUILDINGS = [
+  { id: 'apprentice', name: 'Apprentice',    icon: '\u{1F9D1}\u200D\u{1F373}', cost: 15,      mps: 0.1,    desc: 'Burns half of them. Still counts.' },
+  { id: 'grandma',    name: 'Grandma',       icon: '\u{1F475}', cost: 100,     mps: 1,      desc: 'Bakes with love and an alarming amount of butter.' },
+  { id: 'oven',       name: 'Stone Oven',    icon: '\u{1F525}', cost: 1100,    mps: 8,      desc: 'Wood-fired. Artisanal. Overpriced.' },
+  { id: 'truck',      name: 'Muffin Truck',  icon: '\u{1F69A}', cost: 12000,   mps: 47,     desc: 'Plays an ice cream song. Legally distinct.' },
+  { id: 'bakery',     name: 'Bakery',        icon: '\u{1F3EA}', cost: 130000,  mps: 260,    desc: 'An actual building. Look at you.' },
+  { id: 'factory',    name: 'Factory',       icon: '\u{1F3ED}', cost: 1.4e6,   mps: 1400,   desc: 'OSHA has questions.' },
+  { id: 'lab',        name: 'Flavor Lab',    icon: '\u{1F9EA}', cost: 2e7,     mps: 7800,   desc: 'Engineers flavors that should not exist.' },
+  { id: 'portal',     name: 'Muffin Portal', icon: '\u{1F300}', cost: 3.3e8,   mps: 44000,  desc: 'Imports muffins from the muffin dimension.' },
+  { id: 'timeoven',   name: 'Time Oven',     icon: '\u231B',    cost: 5.1e9,   mps: 260000, desc: 'Bakes muffins before you order them.' },
+  { id: 'star',       name: 'Muffin Star',   icon: '\u{1F31F}', cost: 7.5e10,  mps: 1.6e6,  desc: 'A star made of batter. Physics gave up.' }
+];
+
+const UPGRADES = [];
+// building tiers: x2 that building at owned thresholds
+const TIER_OWN = [1, 5, 25, 50, 100, 150];
+const TIER_COST = [10, 50, 500, 5000, 50000, 500000];
+const TIER_NAMES = ['Better Whisks', 'Training Program', 'Union Contract', 'Automation', 'Quantum Batter', 'Muffin Singularity'];
+BUILDINGS.forEach((b, bi) => TIER_OWN.forEach((own, ti) => UPGRADES.push({
+  id: `${b.id}_${ti}`, icon: b.icon, name: `${b.name}: ${TIER_NAMES[ti]}`, cost: b.cost * TIER_COST[ti],
+  desc: `${b.name}s are twice as efficient.`, req: s => s.owned[b.id] >= own, reqTxt: `Own ${own} ${b.name}`,
+  apply: m => { m.bld[b.id] *= 2; }
+})));
+[
+  ['mitts', '\u{1F9E4}', 'Oven Mitts', 100, 'Clicking is twice as strong.', s => s.clicks >= 10, m => { m.click *= 2; }],
+  ['spatula', '\u{1F944}', 'Silicone Spatula', 500, 'Clicking is twice as strong.', s => s.clicks >= 100, m => { m.click *= 2; }],
+  ['whisk', '\u{1F3C6}', 'Golden Whisk', 10000, 'Clicking is twice as strong.', s => s.clicks >= 500, m => { m.click *= 2; }],
+  ['sticky', '\u{1F36F}', 'Sticky Fingers', 50000, 'Clicks also earn 1% of your per-second.', s => s.clicks >= 1000, m => { m.clickPct += 0.01; }],
+  ['memory', '\u{1F9E0}', 'Muscle Memory', 5e6, 'Clicks earn another +1% of per-second.', s => s.clicks >= 2500, m => { m.clickPct += 0.01; }],
+  ['tunnel', '\u{1F9BE}', 'Carpal Tunnel', 5e8, 'Clicks earn another +2% of per-second. Worth it.', s => s.clicks >= 5000, m => { m.clickPct += 0.02; }],
+  ['lucky', '\u{1F340}', 'Lucky Day', 777777, 'Golden muffins show up twice as often.', s => s.goldens >= 3, m => { m.goldFreq *= 0.5; }],
+  ['serendip', '\u{1F308}', 'Serendipity', 7.7e7, 'Golden muffins show up twice as often. Again.', s => s.goldens >= 10, m => { m.goldFreq *= 0.5; }],
+  ['choc', '\u{1F36B}', 'Chocolate Chip', 5000, '+10% production. The classic.', s => s.runBaked >= 2500, m => { m.flavor += 0.10; }],
+  ['blue', '\u{1FAD0}', 'Blueberry', 50000, '+15% production. Technically fruit.', s => s.runBaked >= 25000, m => { m.flavor += 0.15; }],
+  ['banana', '\u{1F34C}', 'Banana Nut', 5e5, '+20% production.', s => s.runBaked >= 2.5e5, m => { m.flavor += 0.20; }],
+  ['dblchoc', '\u{1F36A}', 'Double Chocolate', 5e6, '+25% production.', s => s.runBaked >= 2.5e6, m => { m.flavor += 0.25; }],
+  ['velvet', '\u2764\uFE0F', 'Red Velvet', 5e7, '+30% production. Fancy.', s => s.runBaked >= 2.5e7, m => { m.flavor += 0.30; }],
+  ['pumpkin', '\u{1F383}', 'Pumpkin Spice', 5e8, '+35% production. Basic, but effective.', s => s.runBaked >= 2.5e8, m => { m.flavor += 0.35; }],
+  ['matcha', '\u{1F375}', 'Matcha', 5e9, '+40% production.', s => s.runBaked >= 2.5e9, m => { m.flavor += 0.40; }],
+  ['galaxy', '\u{1F30C}', 'Galaxy Muffin', 5e10, '+50% production. Tastes like stardust.', s => s.runBaked >= 2.5e10, m => { m.flavor += 0.50; }],
+  ['void', '\u{1F573}\uFE0F', 'Void Muffin', 5e12, '+75% production. Do not look directly at it.', s => s.runBaked >= 2.5e12, m => { m.flavor += 0.75; }]
+].forEach(([id, icon, name, cost, desc, req, apply]) => UPGRADES.push({ id, icon, name, cost, desc, req, reqTxt: '', apply }));
+const UPG_BY_ID = Object.fromEntries(UPGRADES.map(u => [u.id, u]));
+
+const ACHIEVEMENTS = [
+  ['bake1', '\u{1F9C1}', 'First Batch', 'Bake 1 muffin.', s => s.allBaked >= 1],
+  ['bake1k', '\u{1F370}', 'Side Hustle', 'Bake 1,000 muffins.', s => s.allBaked >= 1e3],
+  ['bake1m', '\u{1F382}', 'Muffin Mogul', 'Bake 1 million muffins.', s => s.allBaked >= 1e6],
+  ['bake1b', '\u{1F3E6}', 'Muffin Billionaire', 'Bake 1 billion muffins.', s => s.allBaked >= 1e9],
+  ['bake1t', '\u{1F30D}', 'Global Muffin Crisis', 'Bake 1 trillion muffins.', s => s.allBaked >= 1e12],
+  ['click100', '\u{1F446}', 'Clicky', 'Click 100 times.', s => s.allClicks >= 100],
+  ['click1k', '\u270B', 'Clicker Pro', 'Click 1,000 times.', s => s.allClicks >= 1000],
+  ['click10k', '\u{1F9BE}', 'Get Some Help', 'Click 10,000 times.', s => s.allClicks >= 10000],
+  ['mps10', '\u{1F4C8}', 'Passive Income', 'Reach 10 per second.', (s, mps) => mps >= 10],
+  ['mps1k', '\u{1F4B8}', 'Muffin Machine', 'Reach 1,000 per second.', (s, mps) => mps >= 1000],
+  ['mps1m', '\u{1F680}', 'Muffin Hypersonic', 'Reach 1 million per second.', (s, mps) => mps >= 1e6],
+  ['grandma10', '\u{1F475}', 'Grandma Gang', 'Own 10 Grandmas.', s => s.owned.grandma >= 10],
+  ['grandma100', '\u{1F9D3}', 'Grandmapocalypse', 'Own 100 Grandmas.', s => s.owned.grandma >= 100],
+  ['every', '\u{1F3D7}\uFE0F', 'Diversified', 'Own at least one of every building.', s => BUILDINGS.every(b => s.owned[b.id] > 0)],
+  ['own100', '\u{1F3D9}\uFE0F', 'Real Estate', 'Own 100 buildings total.', s => Object.values(s.owned).reduce((a, b) => a + b, 0) >= 100],
+  ['own500', '\u{1F306}', 'Muffin Metropolis', 'Own 500 buildings total.', s => Object.values(s.owned).reduce((a, b) => a + b, 0) >= 500],
+  ['gold1', '\u2728', 'Shiny!', 'Click a golden muffin.', s => s.goldens >= 1],
+  ['gold25', '\u{1F451}', 'Golden Touch', 'Click 25 golden muffins.', s => s.goldens >= 25],
+  ['upg10', '\u{1F527}', 'Tinkerer', 'Buy 10 upgrades.', s => s.upgrades.length >= 10],
+  ['upg40', '\u2699\uFE0F', 'Optimized', 'Buy 40 upgrades.', s => s.upgrades.length >= 40],
+  ['franchise1', '\u{1F36D}', 'Franchisee', 'Franchise once.', s => s.franchises >= 1],
+  ['franchise5', '\u{1F3E2}', 'Muffin Corp.', 'Franchise 5 times.', s => s.franchises >= 5],
+  ['spr100', '\u{1F308}', 'Sprinkle Hoarder', 'Have 100 sprinkles.', s => s.sprinkles >= 100],
+  ['idle', '\u{1F634}', 'Asleep At The Oven', 'Come back to over an hour of offline baking.', s => s.flags.idle],
+  ['legacy', '\u{1F4DC}', 'Old Timer', 'Played the original Muffin Factory.', s => s.flags.legacy]
+].map(([id, icon, name, desc, test]) => ({ id, icon, name, desc, test }));
+
+/* =========================================================
+   SAVE (namespaced: mf_*)  + migration from old 'muffinGame'
+   ========================================================= */
+const SAVE_KEY = 'mf_save', MUTE_KEY = 'mf_mute';
+function freshState() {
+  return {
+    v: 2, muffins: 0, runBaked: 0, allBaked: 0, clicks: 0, allClicks: 0, goldens: 0,
+    owned: Object.fromEntries(BUILDINGS.map(b => [b.id, 0])), upgrades: [], achievements: [],
+    sprinkles: 0, franchises: 0, lastSeen: Date.now(), started: Date.now(), flags: {}
+  };
+}
+let S = freshState();
+let offlineMsg = null;
+(function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if (raw && raw.v === 2) {
+      S = Object.assign(freshState(), raw);
+      S.owned = Object.assign(freshState().owned, raw.owned || {});
+      S.flags = raw.flags || {};
+      ['muffins', 'runBaked', 'allBaked', 'sprinkles'].forEach(k => { if (!isFinite(S[k])) S[k] = 0; });
+    }
+    const legacy = JSON.parse(localStorage.getItem('muffinGame') || 'null');
+    if (legacy && !S.flags.legacy) {
+      const bonus = Math.max(0, Math.floor((+legacy.muffins || 0) + (+legacy.coins || 0)));
+      const freeApp = Math.min(50, +(legacy.upgrades && legacy.upgrades.autobaker && legacy.upgrades.autobaker.count) || 0);
+      S.muffins += bonus; S.runBaked += bonus; S.allBaked += bonus;
+      S.owned.apprentice += freeApp; S.flags.legacy = true;
+      offlineMsg = `Old save converted: +${fmt(bonus)} muffins` + (freeApp ? ` and ${freeApp} free Apprentices` : '') + '. Welcome back.';
+      localStorage.removeItem('muffinGame');
+    }
+  } catch (e) { S = freshState(); }
+})();
+function persist() { S.lastSeen = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }
+
+/* =========================================================
+   MODIFIERS / PRODUCTION
+   ========================================================= */
+let M;
+const buffs = { frenzy: 0, clickFrenzy: 0 };
+function recompute() {
+  M = { bld: Object.fromEntries(BUILDINGS.map(b => [b.id, 1])), click: 1, clickPct: 0, flavor: 0, goldFreq: 1 };
+  for (const id of S.upgrades) { const u = UPG_BY_ID[id]; if (u) u.apply(M); }
+  M.global = (1 + M.flavor) * (1 + 0.02 * S.sprinkles) * (1 + 0.01 * S.achievements.length);
+}
+function baseMps() {
+  let t = 0;
+  for (const b of BUILDINGS) t += S.owned[b.id] * b.mps * M.bld[b.id];
+  return t * M.global;
+}
+const mps = () => baseMps() * (buffs.frenzy > 0 ? 7 : 1);
+const perClick = () => (M.click * (1 + 0.02 * S.sprinkles) + baseMps() * M.clickPct) * (buffs.clickFrenzy > 0 ? 77 : 1);
+function bldCost(b, n = 1) {
+  // sum of geometric series cost*1.15^owned ... for n items
+  const r = 1.15, o = S.owned[b.id];
+  return b.cost * Math.pow(r, o) * (Math.pow(r, n) - 1) / (r - 1);
+}
+function maxAffordable(b) {
+  const r = 1.15, c0 = b.cost * Math.pow(r, S.owned[b.id]);
+  if (S.muffins < c0) return 0;
+  return Math.floor(Math.log(S.muffins * (r - 1) / c0 + 1) / Math.log(r));
+}
+const sprinklesFor = baked => Math.floor(Math.cbrt(baked / 1e6));
+
+function gain(n) { S.muffins += n; S.runBaked += n; S.allBaked += n; }
+
+/* =========================================================
+   AUDIO
+   ========================================================= */
+let AC = null, master = null, muted = localStorage.getItem(MUTE_KEY) === '1';
+function audio() {
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.gain.value = 0.35; master.connect(AC.destination); } catch (e) { AC = null; } }
+  if (AC && AC.state === 'suspended') AC.resume();
+}
+function tone(f, dur, type = 'triangle', vol = 0.15, delay = 0, f2 = f) {
+  if (!AC || muted) return;
+  const t = AC.currentTime + delay, o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t); if (f2 !== f) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.02);
+}
+const SFX = {
+  click() { tone(500 + Math.random() * 200, 0.07, 'sine', 0.12, 0, 900); },
+  buy() { tone(660, 0.06, 'square', 0.07); tone(880, 0.08, 'square', 0.07, 0.05); },
+  no() { tone(180, 0.1, 'square', 0.06); },
+  gold() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.15, 'triangle', 0.13, i * 0.07)); },
+  ach() { [523, 784, 1047].forEach((f, i) => tone(f, 0.18, 'square', 0.08, i * 0.1)); },
+  prestige() { for (let i = 0; i < 8; i++) tone(300 + i * 120, 0.2, 'triangle', 0.1, i * 0.06); }
+};
+
+/* =========================================================
+   UI HELPERS
+   ========================================================= */
+function toast(html) {
+  const d = document.createElement('div'); d.className = 'toast'; d.innerHTML = html;
+  $('toasts').appendChild(d); setTimeout(() => d.remove(), 3700);
+}
+function modal(title, body, onOk, cancel = false) {
+  $('mTitle').innerHTML = title; $('mBody').innerHTML = body;
+  $('mCancel').classList.toggle('hidden', !cancel);
+  $('modal').classList.remove('hidden');
+  $('mOk').onclick = () => { $('modal').classList.add('hidden'); onOk && onOk(); };
+  $('mCancel').onclick = () => $('modal').classList.add('hidden');
+}
+const tip = $('tip');
+function showTip(e, html) { tip.innerHTML = html; tip.style.display = 'block'; moveTip(e); }
+function moveTip(e) {
+  const x = Math.min(e.clientX + 14, innerWidth - 280), y = Math.min(e.clientY + 14, innerHeight - 100);
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip() { tip.style.display = 'none'; }
+
+/* =========================================================
+   CLICKING
+   ========================================================= */
+const big = $('bigMuffin');
+function floatText(x, y, txt, color = '#fff') {
+  const d = document.createElement('div'); d.className = 'float'; d.textContent = txt; d.style.color = color;
+  d.style.left = (x - 20 + Math.random() * 40) + 'px'; d.style.top = (y - 20) + 'px';
+  document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+}
+big.addEventListener('pointerdown', e => {
+  e.preventDefault(); audio();
+  const n = perClick(); gain(n); S.clicks++; S.allClicks++;
+  SFX.click(); floatText(e.clientX, e.clientY, '+' + fmt(n), buffs.clickFrenzy > 0 ? '#ffc83d' : '#fff');
+  big.classList.add('pop'); setTimeout(() => big.classList.remove('pop'), 70);
+  spawnRain(1);
+});
+
+/* =========================================================
+   SHOP
+   ========================================================= */
+let buyAmt = 1;
+document.querySelectorAll('.buyamt button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.buyamt button').forEach(x => x.classList.toggle('on', x === b));
+  buyAmt = b.dataset.amt === 'max' ? 'max' : +b.dataset.amt; renderShop(true);
+});
+function buyBuilding(b) {
+  const n = buyAmt === 'max' ? Math.max(1, maxAffordable(b)) : buyAmt;
+  const c = bldCost(b, n);
+  if (S.muffins < c) { SFX.no(); return; }
+  S.muffins -= c; S.owned[b.id] += n; SFX.buy();
+  renderShop(true); renderUpgrades(true);
+}
+const bldEls = {};
+function buildShop() {
+  const wrap = $('buildings'); wrap.innerHTML = '';
+  for (const b of BUILDINGS) {
+    const d = document.createElement('button'); d.className = 'bld';
+    d.innerHTML = `<div class="ic">${b.icon}</div><div><div class="nm"></div><div class="cost"></div><div class="ds"></div></div><div class="own"></div>`;
+    d.onclick = () => { audio(); buyBuilding(b); };
+    d.onmouseenter = e => showTip(e, bldTip(b)); d.onmousemove = moveTip; d.onmouseleave = hideTip;
+    wrap.appendChild(d);
+    bldEls[b.id] = { d, nm: d.querySelector('.nm'), cost: d.querySelector('.cost'), ds: d.querySelector('.ds'), own: d.querySelector('.own') };
+  }
+}
+function bldTip(b) {
+  const each = b.mps * M.bld[b.id] * M.global;
+  const total = each * S.owned[b.id];
+  const share = baseMps() ? (total / baseMps() * 100).toFixed(1) : 0;
+  return `<b>${b.icon} ${b.name}</b><br><i>${b.desc}</i><br><br>Each makes <b>${fmt(each)}</b>/s<br>` +
+    `${S.owned[b.id]} owned: <b>${fmt(total)}</b>/s (${share}% of total)`;
+}
+function renderShop() {
+  let prevOwned = true;
+  for (const b of BUILDINGS) {
+    const e = bldEls[b.id];
+    const n = buyAmt === 'max' ? Math.max(1, maxAffordable(b)) : buyAmt;
+    const c = bldCost(b, n);
+    const visible = prevOwned || S.owned[b.id] > 0 || S.runBaked >= b.cost * 0.5;
+    const known = S.owned[b.id] > 0 || S.runBaked >= b.cost * 0.3;
+    e.d.classList.toggle('hidden', !visible);
+    e.d.classList.toggle('mystery', !known);
+    e.nm.textContent = known ? b.name + (n > 1 ? ` x${n}` : '') : '???';
+    e.cost.textContent = '\u{1F9C1} ' + fmt(c);
+    e.cost.classList.toggle('no', S.muffins < c);
+    e.ds.textContent = known ? `+${fmt(b.mps * M.bld[b.id] * M.global * n)}/s` : '';
+    e.own.textContent = S.owned[b.id] || '';
+    e.d.classList.toggle('no', S.muffins < c);
+    prevOwned = S.owned[b.id] > 0;
+  }
+}
+
+/* =========================================================
+   UPGRADES
+   ========================================================= */
+let upgSig = '';
+function availableUpgrades() {
+  return UPGRADES.filter(u => !S.upgrades.includes(u.id) && u.req(S)).sort((a, b) => a.cost - b.cost);
+}
+function renderUpgrades(force) {
+  const list = availableUpgrades();
+  const sig = list.map(u => u.id).join(',') + '|' + list.map(u => S.muffins >= u.cost ? 1 : 0).join('');
+  $('upgDot').classList.toggle('hidden', !list.some(u => S.muffins >= u.cost));
+  if (!force && sig === upgSig) return;
+  upgSig = sig;
+  const wrap = $('upgrades'); wrap.innerHTML = '';
+  if (!list.length) { wrap.innerHTML = '<div class="empty">No upgrades available yet.<br>Bake more, buy more, click more.</div>'; return; }
+  for (const u of list) {
+    const d = document.createElement('button');
+    d.className = 'upg' + (S.muffins >= u.cost ? '' : ' no');
+    d.innerHTML = `<div class="ic">${u.icon}</div><div><div class="nm">${u.name}</div><div class="ds">${u.desc}</div><div class="cost">\u{1F9C1} ${fmt(u.cost)}</div></div>`;
+    d.onclick = () => {
+      audio();
+      if (S.muffins < u.cost || S.upgrades.includes(u.id)) { SFX.no(); return; }
+      S.muffins -= u.cost; S.upgrades.push(u.id); recompute(); SFX.buy();
+      toast(`${u.icon} <b>${u.name}</b> bought`);
+      renderUpgrades(true); renderShop();
+    };
+    wrap.appendChild(d);
+  }
+}
+
+/* =========================================================
+   ACHIEVEMENTS / STATS / PRESTIGE
+   ========================================================= */
+function checkAchievements() {
+  const m = baseMps();
+  for (const a of ACHIEVEMENTS) {
+    if (!S.achievements.includes(a.id) && a.test(S, m)) {
+      S.achievements.push(a.id); recompute(); SFX.ach();
+      toast(`\u{1F3C6} Achievement: <b>${a.icon} ${a.name}</b> (+1% production)`);
+    }
+  }
+}
+function renderAch() {
+  const wrap = $('ach');
+  if (!wrap.children.length) {
+    for (const a of ACHIEVEMENTS) {
+      const d = document.createElement('div'); d.textContent = a.icon; d.dataset.id = a.id;
+      d.onmouseenter = e => showTip(e, `<b>${S.achievements.includes(a.id) ? a.name : '???'}</b><br>${a.desc}`);
+      d.onmousemove = moveTip; d.onmouseleave = hideTip;
+      d.onclick = e => showTip(e, `<b>${S.achievements.includes(a.id) ? a.name : '???'}</b><br>${a.desc}`);
+      wrap.appendChild(d);
+    }
+  }
+  [...wrap.children].forEach(d => d.classList.toggle('got', S.achievements.includes(d.dataset.id)));
+  $('achCount').textContent = `${S.achievements.length}/${ACHIEVEMENTS.length}`;
+}
+function renderStats() {
+  const totalB = Object.values(S.owned).reduce((a, b) => a + b, 0);
+  const rows = [
+    ['Muffins baked (this franchise)', fmt(S.runBaked)],
+    ['Muffins baked (all time)', fmt(S.allBaked)],
+    ['Per second', fmt(mps())],
+    ['Per click', fmt(perClick())],
+    ['Clicks (all time)', S.allClicks.toLocaleString()],
+    ['Buildings owned', totalB.toLocaleString()],
+    ['Upgrades bought', `${S.upgrades.length}/${UPGRADES.length}`],
+    ['Golden muffins clicked', S.goldens],
+    ['Franchises', S.franchises],
+    ['Production bonus', '+' + Math.round((M.global - 1) * 100) + '%'],
+    ['Playing for', fmtTime((Date.now() - S.started) / 1000)]
+  ];
+  $('statTable').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  const gainS = sprinklesFor(S.runBaked);
+  $('sprHave').textContent = S.sprinkles.toLocaleString();
+  $('sprPct').textContent = (S.sprinkles * 2).toLocaleString();
+  $('sprGain').textContent = gainS.toLocaleString();
+  const nextAt = Math.pow(gainS + 1, 3) * 1e6;
+  $('sprNext').textContent = `Next sprinkle at ${fmt(nextAt)} baked this run.`;
+  $('prestigeBtn').disabled = gainS < 1;
+  renderAch();
+}
+$('prestigeBtn').onclick = () => {
+  const g = sprinklesFor(S.runBaked);
+  if (g < 1) return;
+  modal('FRANCHISE?', `You'll lose all muffins, buildings and upgrades.<br>You keep achievements and gain <b>${g}</b> sprinkles (+${g * 2}% forever).`, () => {
+    S.sprinkles += g; S.franchises++;
+    S.muffins = 0; S.runBaked = 0; S.clicks = 0; S.upgrades = [];
+    S.owned = freshState().owned;
+    buffs.frenzy = 0; buffs.clickFrenzy = 0;
+    recompute(); SFX.prestige(); persist();
+    toast(`\u2728 Franchised! +${g} sprinkles.`);
+    renderShop(); renderUpgrades(true); renderStats();
+  }, true);
+};
+$('wipeBtn').onclick = () => modal('WIPE EVERYTHING?', 'All progress, sprinkles and achievements. Gone. Forever.', () => {
+  localStorage.removeItem(SAVE_KEY); S = freshState(); recompute(); persist();
+  renderShop(); renderUpgrades(true); renderStats(); toast('Save wiped. Fresh oven.');
+}, true);
+
+/* =========================================================
+   GOLDEN MUFFIN
+   ========================================================= */
+const golden = $('golden');
+let goldT = 40 + Math.random() * 60, goldVisible = 0;
+function spawnGolden() {
+  const pad = 80;
+  golden.style.left = (pad + Math.random() * (innerWidth - pad * 2)) + 'px';
+  golden.style.top = (pad + Math.random() * (innerHeight - pad * 2)) + 'px';
+  golden.style.display = 'block';
+  golden.style.animation = 'none'; void golden.offsetWidth; golden.style.animation = '';
+  goldVisible = 13;
+}
+golden.addEventListener('pointerdown', e => {
+  e.preventDefault(); audio();
+  golden.style.display = 'none'; goldVisible = 0; S.goldens++; SFX.gold();
+  const roll = Math.random();
+  if (roll < 0.45) { buffs.frenzy = 30; toast('\u2728 <b>FRENZY!</b> x7 production for 30s'); }
+  else if (roll < 0.75) {
+    const amt = Math.max(13, Math.min(S.muffins * 0.15, baseMps() * 900));
+    gain(amt); toast(`\u2728 <b>LUCKY!</b> +${fmt(amt)} muffins`); floatText(e.clientX, e.clientY, '+' + fmt(amt), '#ffc83d');
+  } else { buffs.clickFrenzy = 12; toast('\u2728 <b>CLICK FRENZY!</b> x77 clicks for 12s'); }
+  checkAchievements();
+});
+
+/* =========================================================
+   MUFFIN RAIN (background canvas)
+   ========================================================= */
+const rain = $('rain'), rctx = rain.getContext('2d');
+let drops = [];
+function sizeRain() { rain.width = innerWidth; rain.height = innerHeight; }
+window.addEventListener('resize', sizeRain); sizeRain();
+function spawnRain(n) { for (let i = 0; i < n && drops.length < 80; i++) drops.push({ x: Math.random() * rain.width, y: -40, v: 60 + Math.random() * 120, r: Math.random() * 6, s: 18 + Math.random() * 16 }); }
+let rainAcc = 0;
+function drawRain(dt) {
+  rainAcc += dt * Math.min(12, Math.log10(1 + mps()) * 2.2);
+  while (rainAcc > 1) { spawnRain(1); rainAcc--; }
+  rctx.clearRect(0, 0, rain.width, rain.height);
+  rctx.globalAlpha = 0.35;
+  for (const d of drops) {
+    d.y += d.v * dt; d.r += dt;
+    rctx.save(); rctx.translate(d.x, d.y); rctx.rotate(d.r); rctx.font = d.s + 'px serif'; rctx.fillText('\u{1F9C1}', -d.s / 2, d.s / 2); rctx.restore();
+  }
+  rctx.globalAlpha = 1;
+  drops = drops.filter(d => d.y < rain.height + 40);
+}
+
+/* =========================================================
+   NEWS TICKER
+   ========================================================= */
+const NEWS = [
+  [0, 'Local baker opens tiny shop. Nobody cares yet.'],
+  [100, 'Neighbors report suspicious smell of blueberries.'],
+  [1e3, 'Man eats 40 muffins, regrets nothing, regrets everything.'],
+  [1e4, 'Grandmas across the county unionize. Demand more butter.'],
+  [1e5, 'Muffin stock (MUFN) up 400%. Analysts baffled.'],
+  [1e6, 'Scientists confirm: muffins are just ugly cupcakes. Riots ensue.'],
+  [1e7, 'Government considers muffin-backed currency.'],
+  [1e8, 'Flavor Lab accidentally creates sentient bran. It wants rights.'],
+  [1e9, 'Moon now 3% muffin by mass. NASA "not thrilled".'],
+  [1e10, 'Muffin Portal leaks. Alternate-dimension muffins demand refunds.'],
+  [1e12, 'The universe is mostly muffin now. Thanks, Dustin.']
+];
+let newsT = 0;
+function rollNews() {
+  const pool = NEWS.filter(n => S.allBaked >= n[0]).map(n => n[1]);
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  const sp = $('newsText'); sp.textContent = pick;
+  sp.style.animation = 'none'; void sp.offsetWidth; sp.style.animation = '';
+}
+
+/* =========================================================
+   TABS / MUTE
+   ========================================================= */
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t));
+  ['shop', 'upgrades', 'stats'].forEach(p => $('pane-' + p).classList.toggle('hidden', p !== t.dataset.tab));
+  if (t.dataset.tab === 'stats') renderStats();
+  if (t.dataset.tab === 'upgrades') renderUpgrades(true);
+});
+const muteBtn = $('muteBtn');
+const syncMute = () => muteBtn.innerHTML = muted ? '&#128263;' : '&#128266;';
+muteBtn.onclick = () => { muted = !muted; localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); syncMute(); };
+syncMute();
+
+/* =========================================================
+   OFFLINE PROGRESS
+   ========================================================= */
+recompute();
+(function offline() {
+  const away = (Date.now() - (S.lastSeen || Date.now())) / 1000;
+  if (away > 30) {
+    const capped = Math.min(away, 8 * 3600);
+    const earned = baseMps() * capped * 0.5;
+    if (earned > 0) {
+      gain(earned);
+      if (away >= 3600) S.flags.idle = true;
+      offlineMsg = (offlineMsg ? offlineMsg + '<br><br>' : '') +
+        `You were gone ${fmtTime(away)}. Your staff baked <b>${fmt(earned)}</b> muffins at half speed` +
+        (away > 8 * 3600 ? ' (capped at 8 hours)' : '') + '.';
+    }
+  }
+})();
+
+/* =========================================================
+   MAIN LOOP
+   ========================================================= */
+buildShop(); renderShop(); renderUpgrades(true); renderAch();
+let last = performance.now(), saveT = 0, uiT = 0, achT = 0;
+function loop(now) {
+  requestAnimationFrame(loop);
+  let dt = (now - last) / 1000; last = now;
+  if (dt < 0) dt = 0;
+  if (dt > 3600) dt = 3600;   // background tab catch-up, full speed up to an hour
+  gain(mps() * dt);
+  buffs.frenzy = Math.max(0, buffs.frenzy - dt);
+  buffs.clickFrenzy = Math.max(0, buffs.clickFrenzy - dt);
+
+  if (goldVisible > 0) { goldVisible -= dt; if (goldVisible <= 0) golden.style.display = 'none'; }
+  else { goldT -= dt; if (goldT <= 0) { spawnGolden(); goldT = (60 + Math.random() * 120) * M.goldFreq; } }
+
+  const vdt = Math.min(dt, 0.1);
+  drawRain(vdt);
+
+  uiT -= dt;
+  if (uiT <= 0) {
+    uiT = 0.1;
+    $('muffinCount').textContent = fmt(S.muffins);
+    const m = mps(), mEl = $('mps');
+    mEl.textContent = fmt(m) + ' per second';
+    mEl.classList.toggle('frenzy', buffs.frenzy > 0);
+    $('perClick').textContent = '+' + fmt(perClick()) + ' per click';
+    document.title = fmt(S.muffins) + ' muffins - Idle Muffin Factory';
+    const b = [];
+    if (buffs.frenzy > 0) b.push(`<span class="buff">\u2728 Frenzy x7 ${Math.ceil(buffs.frenzy)}s</span>`);
+    if (buffs.clickFrenzy > 0) b.push(`<span class="buff">\u{1F446} Click x77 ${Math.ceil(buffs.clickFrenzy)}s</span>`);
+    $('buffs').innerHTML = b.join('');
+    renderShop(); renderUpgrades(false);
+    if (!$('pane-stats').classList.contains('hidden')) renderStats();
+  }
+  achT -= dt; if (achT <= 0) { achT = 1; checkAchievements(); }
+  newsT -= dt; if (newsT <= 0) { newsT = 18; rollNews(); }
+  saveT -= dt; if (saveT <= 0) { saveT = 5; persist(); }
+}
+requestAnimationFrame(loop);
+document.addEventListener('visibilitychange', persist);
+window.addEventListener('beforeunload', persist);
+if (offlineMsg) modal('WELCOME BACK', offlineMsg);
+persist();
+
+window.__mf = { get S() { return S; }, mps, perClick, fmt };
+})();
+</script>
 </body>
 </html>
