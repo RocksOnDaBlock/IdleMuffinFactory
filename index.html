@@ -34,7 +34,7 @@
   @keyframes pulse{to{opacity:.6}}
   #bigMuffin{width:clamp(180px,30vw,280px);height:clamp(180px,30vw,280px);border:none;background:none;cursor:pointer;
     font-size:clamp(130px,22vw,210px);line-height:1;filter:drop-shadow(0 12px 18px rgba(0,0,0,.55));
-    transition:transform .07s;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
+    transition:transform .07s;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;touch-action:manipulation;}
   #bigMuffin:hover{transform:scale(1.04) rotate(-2deg);}
   #bigMuffin.pop{transform:scale(.92);}
   #bigMuffin::before{content:"";position:absolute;inset:8%;border-radius:50%;z-index:-1;
@@ -69,7 +69,7 @@
   .buyamt button.on{border-color:var(--gold);color:var(--gold);}
   .bld{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;
     border-radius:10px;background:linear-gradient(90deg,#3a2216,#2b1810);border:2px solid #ffffff14;cursor:pointer;
-    transition:transform .08s,border-color .15s;width:100%;color:#fff;text-align:left;}
+    transition:transform .08s,border-color .15s;width:100%;color:#fff;text-align:left;touch-action:manipulation;}
   .bld:hover:not(.no){border-color:var(--gold);transform:translateX(-3px);}
   .bld.no{opacity:.5;cursor:not-allowed;}
   .bld.mystery{filter:brightness(.35);pointer-events:none;}
@@ -80,7 +80,7 @@
   .bld .cost.no{color:#ff8a8a;}
   .bld .own{font-size:30px;font-weight:700;opacity:.35;}
   .upg{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;
-    border-radius:10px;background:#3a2216;border:2px solid #ffffff14;cursor:pointer;color:#fff;text-align:left;width:100%;}
+    border-radius:10px;background:#3a2216;border:2px solid #ffffff14;cursor:pointer;color:#fff;text-align:left;width:100%;touch-action:manipulation;}
   .upg:hover:not(.no){border-color:var(--gold);}
   .upg.no{opacity:.5;cursor:not-allowed;}
   .upg .ic{font-size:28px;text-align:center;}
@@ -90,7 +90,7 @@
   .empty{opacity:.6;text-align:center;padding:20px;font-size:14px;}
   .ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;}
   .ach div{aspect-ratio:1;border-radius:8px;background:#0005;display:flex;align-items:center;justify-content:center;
-    font-size:26px;filter:grayscale(1) brightness(.4);border:2px solid #ffffff14;}
+    font-size:26px;filter:grayscale(1) brightness(.4);border:2px solid #ffffff14;cursor:pointer;}
   .ach div.got{filter:none;border-color:var(--gold);}
   .statgrid{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:14px;}
   .statgrid td{padding:6px 2px;border-bottom:1px solid #ffffff14;}
@@ -104,7 +104,7 @@
   .danger{background:#ff6b6b;}
   #tip{position:fixed;z-index:60;pointer-events:none;background:#140a05f2;border:2px solid var(--gold);border-radius:8px;
     padding:8px 10px;font-size:13px;max-width:260px;display:none;}
-  #toasts{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:6px;align-items:center;}
+  #toasts{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;}
   .toast{background:#140a05f0;border:2px solid var(--gold);border-radius:10px;padding:8px 14px;font-size:14px;
     animation:tin .3s ease-out, tout .4s ease-in 3.2s forwards;}
   @keyframes tin{from{transform:translateY(-12px);opacity:0}}
@@ -172,7 +172,7 @@
       <table class="statgrid" id="statTable"></table>
       <h3 style="font-size:14px;margin:4px 0 8px">Achievements <span id="achCount" style="opacity:.7"></span></h3>
       <div class="ach" id="ach"></div>
-      <p style="font-size:12px;opacity:.7;margin:10px 0">Each achievement: +1% production.</p>
+      <p style="font-size:12px;opacity:.7;margin:10px 0">Each achievement: +1% production. Tap one to see what it is.</p>
       <button class="bigbtn danger" id="wipeBtn" style="margin-top:6px">WIPE SAVE</button>
     </div>
   </aside>
@@ -386,13 +386,33 @@ function modal(title, body, onOk, cancel = false) {
   $('mOk').onclick = () => { $('modal').classList.add('hidden'); onOk && onOk(); };
   $('mCancel').onclick = () => $('modal').classList.add('hidden');
 }
+
+/* ---------- tooltips ----------
+   Hover tips are MOUSE ONLY. Phones have no "mouse leave", so a tapped tip used to stick forever.
+   On touch, tips only appear where you explicitly tap for info (achievements) and auto-hide. */
 const tip = $('tip');
+let tipTimer = 0;
 function showTip(e, html) { tip.innerHTML = html; tip.style.display = 'block'; moveTip(e); }
 function moveTip(e) {
-  const x = Math.min(e.clientX + 14, innerWidth - 280), y = Math.min(e.clientY + 14, innerHeight - 100);
+  const w = tip.offsetWidth || 260, h = tip.offsetHeight || 100;
+  const x = Math.max(6, Math.min(e.clientX + 14, innerWidth - w - 6));
+  const y = Math.max(6, Math.min(e.clientY + 14, innerHeight - h - 6));
   tip.style.left = x + 'px'; tip.style.top = y + 'px';
 }
-function hideTip() { tip.style.display = 'none'; }
+function hideTip() { clearTimeout(tipTimer); tip.style.display = 'none'; }
+function attachHoverTip(elm, htmlFn) {
+  elm.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') showTip(e, htmlFn()); });
+  elm.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' && tip.style.display === 'block') moveTip(e); });
+  elm.addEventListener('pointerleave', hideTip);
+}
+function tapTip(e, html) {
+  showTip(e, html);
+  clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 2500);
+}
+// any touch anywhere, any scroll, or leaving the page = tip goes away
+document.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') hideTip(); }, true);
+document.addEventListener('scroll', hideTip, true);
+window.addEventListener('blur', hideTip);
 
 /* =========================================================
    CLICKING
@@ -433,7 +453,7 @@ function buildShop() {
     const d = document.createElement('button'); d.className = 'bld';
     d.innerHTML = `<div class="ic">${b.icon}</div><div><div class="nm"></div><div class="cost"></div><div class="ds"></div></div><div class="own"></div>`;
     d.onclick = () => { audio(); buyBuilding(b); };
-    d.onmouseenter = e => showTip(e, bldTip(b)); d.onmousemove = moveTip; d.onmouseleave = hideTip;
+    attachHoverTip(d, () => bldTip(b));
     wrap.appendChild(d);
     bldEls[b.id] = { d, nm: d.querySelector('.nm'), cost: d.querySelector('.cost'), ds: d.querySelector('.ds'), own: d.querySelector('.own') };
   }
@@ -507,14 +527,14 @@ function checkAchievements() {
     }
   }
 }
+function achTip(a) { return `<b>${S.achievements.includes(a.id) ? a.name : '???'}</b><br>${a.desc}`; }
 function renderAch() {
   const wrap = $('ach');
   if (!wrap.children.length) {
     for (const a of ACHIEVEMENTS) {
       const d = document.createElement('div'); d.textContent = a.icon; d.dataset.id = a.id;
-      d.onmouseenter = e => showTip(e, `<b>${S.achievements.includes(a.id) ? a.name : '???'}</b><br>${a.desc}`);
-      d.onmousemove = moveTip; d.onmouseleave = hideTip;
-      d.onclick = e => showTip(e, `<b>${S.achievements.includes(a.id) ? a.name : '???'}</b><br>${a.desc}`);
+      attachHoverTip(d, () => achTip(a));
+      d.addEventListener('click', e => { if (e.pointerType !== 'mouse') tapTip(e, achTip(a)); });
       wrap.appendChild(d);
     }
   }
@@ -639,6 +659,7 @@ function rollNews() {
    TABS / MUTE
    ========================================================= */
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  hideTip();
   document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t));
   ['shop', 'upgrades', 'stats'].forEach(p => $('pane-' + p).classList.toggle('hidden', p !== t.dataset.tab));
   if (t.dataset.tab === 'stats') renderStats();
